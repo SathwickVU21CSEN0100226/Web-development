@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Our Products</h2>
+    <div class="row">
+    {% for product in products %}
+        <div class="col-md-4 mb-3">
+            <div class="card" style = "background-color: #1e2d3d;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                </div>
+            </div>
+         </div>
+    {% endfor %}
+    </div>
+{% endblock %}

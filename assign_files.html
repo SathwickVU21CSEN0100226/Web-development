@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Assign Files to Users</h2>
+     <form method="post">
+        <div class="mb-3">
+           <label for="user_id" class="form-label">User</label>
+             <select class="form-control" id="user_id" name="user_id" required>
+                {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+              </select>
+         </div>
+         <div class="mb-3">
+           <label for="file_id" class="form-label">File</label>
+             <select class="form-control" id="file_id" name="file_id" required>
+                {% for file in files %}
+                <option value="{{ file.id }}">{{ file.file_name }}</option>
+                {% endfor %}
+              </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Assign File</button>
+       <a href="/admin/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </form>
+{% endblock %}

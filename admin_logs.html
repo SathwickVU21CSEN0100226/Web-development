@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+ <h2>Admin Logs</h2>
+<table class="table">
+    <thead>
+       <tr>
+            <th>Type</th>
+            <th>Time</th>
+            <th>User</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+        <tr>
+             <td>{{ log.log_type }}</td>
+            <td>{{ log.log_time }}</td>
+            <td>{{ log.username if log.username else 'System' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

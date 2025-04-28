@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+      <h2>Analyst Dashboard</h2>
+        <h3>Files</h3>
+        <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                 <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file.file_name }}</td>
+                 <td><a href="/file/{{file.id}}" class="btn btn-primary">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+       </table>
+
+     <h3>Logs (Designer & Guest Users)</h3>
+    <table class="table">
+        <thead>
+           <tr>
+                <th>Type</th>
+                <th>Time</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                 <td>{{ log.log_type }}</td>
+                <td>{{ log.log_time }}</td>
+                <td>{{ log.username if log.username else 'System' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+     </table>
+    {% endblock %}

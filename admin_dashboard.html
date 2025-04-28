@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Admin Dashboard</h2>
+    <div class="mb-3">
+        <a href="/admin/create_user" class="btn btn-primary">Create User</a>
+        <a href="/admin/upload" class="btn btn-primary">Upload Files</a>
+        <a href="/admin/assign_files" class="btn btn-primary">Assign Files</a>
+         <form method="post" action="/admin/generate_baseline" style="display: inline-block;">
+             <button type="submit" class="btn btn-secondary">Generate Baseline Hash</button>
+        </form>
+    </div>
+    
+    <h3>Files</h3>
+     <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Current Hash</th>
+                    <th>   </th>
+                    <th>Access Code</th>
+                    <th>Actions</th>
+                    <th>   </th>
+                     <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody id="file-table-body">
+                {% for file in files %}
+                <tr id="file-row-{{ file.id }}">
+                    <td>{{ file.file_name }}</td>
+                    <td id="file-hash-{{ file.id }}">{{ file.hash_value }}</td>
+                    <td id="file-baseline-hash-{{ file.id }}">{{file.baseline_hash}}</td>
+                     <td id="file-time-code-{{ file.id }}"></td>
+                    <td><a href="/file/{{file.id}}" class="btn btn-primary">View</a></td>
+                    <td id="file-integrity-{{ file.id }}"></td>
+                    <td>
+                        <form method="post" action="/admin/delete_file/{{ file.id }}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+         <h3>Login Activity (Last 10)</h3>
+         <table class="table">
+            <thead>
+               <tr>
+                    <th>Type</th>
+                    <th>Time</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                     <td>{{ log.log_type }}</td>
+                    <td>{{ log.log_time }}</td>
+                    <td>{{ log.username if log.username else 'System' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/admin/logs" class="btn btn-primary">View All Logs</a>
+     <script>
+       function fetchNewHashes(){
+          fetch('/admin/files_json')
+            .then(response => response.json())
+              .then(data => {
+                 data.forEach(file => {
+                   const hashElement = document.getElementById(`file-hash-${file.id}`);
+                   if(hashElement){
+                     hashElement.textContent = file.hash_value;
+                    }
+                   const fileRow = document.getElementById(`file-row-${file.id}`)
+                   if(fileRow){
+                     fileRow.querySelector('a').href = `/file/${file.id}`;
+                   }
+                   const baselineHashElement = document.getElementById(`file-baseline-hash-${file.id}`)
+                   const integrityElement = document.getElementById(`file-integrity-${file.id}`)
+                    const timeCodeElement = document.getElementById(`file-time-code-${file.id}`)
+                   if(baselineHashElement && hashElement && integrityElement){
+                    if(baselineHashElement.textContent === hashElement.textContent){
+                      integrityElement.textContent = "Integrity: Verified";
+                      integrityElement.style.color = 'green';
+                     } 
+                    // else {
+                    //   integrityElement.textContent = "Integrity: Failed";
+                    //     integrityElement.style.color = 'red';
+                    // }
+                     if(timeCodeElement && data){
+                      const fileData = data.find(item => item.id === file.id);
+                      if(fileData){
+                        timeCodeElement.textContent = fileData.time_code;
+                      }
+                    }
+                  }
+                });
+            });
+          }
+          setInterval(fetchNewHashes, 10000); // Update every 60 seconds
+      </script>
+    {% endblock %}

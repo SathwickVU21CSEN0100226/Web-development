@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+ <h2>File: {{ file.file_name }}</h2>
+    {% if file_error %}
+       <div class="alert alert-danger">{{file_error}}</div>
+    {% elif file_content %}
+        <p>Content:</p>
+        <pre>{{ file_content }}</pre>
+        <a href="/{{ session['role'] }}/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    {% else %}
+        <form method="post">
+            <div class="mb-3">
+                <label for="hash_input" class="form-label">Access Code</label>
+                <input type="text" class="form-control" id="hash_input" name="hash_input" required>
+            </div>
+             <button type="submit" class="btn btn-primary">View File</button>
+             <a href="/{{ session['role'] }}/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+        </form>
+    {% endif %}
+{% endblock %}
